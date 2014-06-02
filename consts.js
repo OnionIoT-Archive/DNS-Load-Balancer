@@ -6,15 +6,15 @@ module.exports.ns_maxmsg = 65535;		// Maximum message size
 module.exports.ns_maxcdname = 255;		// Maximum compressed domain name
 module.exports.ns_maxlabel = 63;		// Maximum compressed domain label
 module.exports.ns_hfixedsz = 12;		// Bytes of fixed data in header
-module.exports.ns_qfixedsz = 4;		// Bytes of fixed data in query
+module.exports.ns_qfixedsz = 4;         // Bytes of fixed data in query
 module.exports.ns_rrfixedsz = 10;		// Bytes of fixed data in r record
 module.exports.ns_int32sz = 4;			// Bytes of data in a u_int32_t
 module.exports.ns_int16sz = 2;			// Bytes of data in a u_int16_t
 module.exports.ns_int8sz = 1;			// Bytes of data in a u_int8_t
-module.exports.ns_inaddrsz = 4;		// IPv4 T_A
+module.exports.ns_inaddrsz = 4;         // IPv4 T_A
 module.exports.ns_in6addrsz = 16;		// IPv6 T_AAAA
-module.exports.ns_cmprsflgs = 0xc0;	// Flag bits indicating name compression.
-module.exports.ns_defaultport = 53;	// For both UDP and TCP.
+module.exports.ns_cmprsflgs = 0xc0;     // Flag bits indicating name compression.
+module.exports.ns_defaultport = 53;     // For both UDP and TCP.
 
 module.exports.ns_sect = {
     'ns_s_qd': 0,			// Query: Question.
@@ -282,120 +282,120 @@ module.exports.res_sectioncodes = [
 ];
 
 module.exports.p_class_syms = {
-    1: 'IN',
-    3: 'CHAOS',
-    4: 'HESOID',
-    254: 'ANY',
-    255: 'NONE'
+    '1': 'IN',
+    '3': 'CHAOS',
+    '4': 'HESOID',
+    '254': 'ANY',
+    '255': 'NONE'
 };
 
 module.exports.p_default_section_syms = {
-    0: 'QUERY',
-    1: 'ANSWER',
-    2: 'AUTHORITY',
-    3: 'ADDITIONAL'
+    '0': 'QUERY',
+    '1': 'ANSWER',
+    '2': 'AUTHORITY',
+    '3': 'ADDITIONAL'
 };
 
 module.exports.p_key_syms = {
-    1: ['RSA', 'RSA KEY with MD5 hash'],
-    2: ['DH', 'Diffie Hellman'],
-    3: ['DSA', 'Digital Signature Algorithm'],
-    4: ['PRIVATE', 'Algorithm obtained from OID']
+    '1': ['RSA', 'RSA KEY with MD5 hash'],
+    '2': ['DH', 'Diffie Hellman'],
+    '3': ['DSA', 'Digital Signature Algorithm'],
+    '4': ['PRIVATE', 'Algorithm obtained from OID']
 };
 
 module.exports.p_cert_syms = {
-    1: ['PKIX', 'PKIX (X.509v3) Certificate'],
-    2: ['SKPI', 'SPKI Certificate'],
-    3: ['PGP', 'PGP Certificate'],
-    253: ['URL', 'URL Private'],
-    254: ['OID', 'OID Private']
+    '1': ['PKIX', 'PKIX (X.509v3) Certificate'],
+    '2': ['SKPI', 'SPKI Certificate'],
+    '3': ['PGP', 'PGP Certificate'],
+    '253': ['URL', 'URL Private'],
+    '254': ['OID', 'OID Private']
 };
 
 module.exports.p_type_syms = {
-    1: 'A',
-    2: 'NS',
-    3: 'MD',
-    4: 'MF',
-    5: 'CNAME',
-    6: 'SOA',
-    7: 'MB',
-    8: 'MG',
-    9: 'MR',
-    10: 'NULL',
-    11: 'WKS',
-    12: 'PTR',
-    13: 'HINFO',
-    14: 'MINFO',
-    15: 'MX',
-    16: 'TXT',
-    17: 'RP',
-    18: 'AFSDB',
-    19: 'X25',
-    20: 'ISDN',
-    21: 'RT',
-    22: 'NSAP',
-    23: 'NSAP_PTR',
-    24: 'SIG',
-    25: 'KEY',
-    26: 'PX',
-    27: 'GPOS',
-    28: 'AAAA',
-    29: 'LOC',
-    30: 'NXT',
-    31: 'EID',
-    32: 'NIMLOC',
-    33: 'SRV',
-    34: 'ATMA',
-    35: 'NAPTR',
-    36: 'KX',
-    37: 'CERT',
-    38: 'A6',
-    39: 'DNAME',
-    40: 'SINK',
-    41: 'OPT',
-    42: 'APL',
-    43: 'DS',
-    44: 'SSHFP',
-    45: 'IPSECKEY',
-    46: 'RRSIG',
-    47: 'NSEC',
-    48: 'DNSKEY',
-    49: 'DHCID',
-    50: 'NSEC3',
-    51: 'NSEC3PARAM',
-    55: 'HIP',
-    99: 'SPF',
-    249: 'TKEY',
-    250: 'TSIG',
-    251: 'IXFR',
-    252: 'AXFR',
-    253: 'MAILB',
-    254: 'MAILA',
-    255: 'ANY',
-    32769: 'DLV',
-    256: 'ZXFR'
+    '1': 'A',
+    '2': 'NS',
+    '3': 'MD',
+    '4': 'MF',
+    '5': 'CNAME',
+    '6': 'SOA',
+    '7': 'MB',
+    '8': 'MG',
+    '9': 'MR',
+    '10': 'NULL',
+    '11': 'WKS',
+    '12': 'PTR',
+    '13': 'HINFO',
+    '14': 'MINFO',
+    '15': 'MX',
+    '16': 'TXT',
+    '17': 'RP',
+    '18': 'AFSDB',
+    '19': 'X25',
+    '20': 'ISDN',
+    '21': 'RT',
+    '22': 'NSAP',
+    '23': 'NSAP_PTR',
+    '24': 'SIG',
+    '25': 'KEY',
+    '26': 'PX',
+    '27': 'GPOS',
+    '28': 'AAAA',
+    '29': 'LOC',
+    '30': 'NXT',
+    '31': 'EID',
+    '32': 'NIMLOC',
+    '33': 'SRV',
+    '34': 'ATMA',
+    '35': 'NAPTR',
+    '36': 'KX',
+    '37': 'CERT',
+    '38': 'A6',
+    '39': 'DNAME',
+    '40': 'SINK',
+    '41': 'OPT',
+    '42': 'APL',
+    '43': 'DS',
+    '44': 'SSHFP',
+    '45': 'IPSECKEY',
+    '46': 'RRSIG',
+    '47': 'NSEC',
+    '48': 'DNSKEY',
+    '49': 'DHCID',
+    '50': 'NSEC3',
+    '51': 'NSEC3PARAM',
+    '55': 'HIP',
+    '99': 'SPF',
+    '249': 'TKEY',
+    '250': 'TSIG',
+    '251': 'IXFR',
+    '252': 'AXFR',
+    '253': 'MAILB',
+    '254': 'MAILA',
+    '255': 'ANY',
+    '32769': 'DLV',
+    '256': 'ZXFR'
 };
 
 module.exports.p_rcode_syms = {
-    0: ['NOERROR', 'no error'],
-    1: ['FORMERR', 'format error'],
-    2: ['SERVFAIL', 'server failed'],
-    3: ['NXDOMAIN', 'no such domain name'],
-    4: ['NOTIMP', 'not implemented'],
-    5: ['REFUSED', 'refused'],
+    '0': ['NOERROR', 'no error'],
+    '1': ['FORMERR', 'format error'],
+    '2': ['SERVFAIL', 'server failed'],
+    '3': ['NXDOMAIN', 'no such domain name'],
+    '4': ['NOTIMP', 'not implemented'],
+    '5': ['REFUSED', 'refused'],
 
 	// These are for BIND_UPDATE
-    6: ['YXDOMAIN', 'domain name exist'],
-    7: ['YXRRSET', 'rrset exists'],
-    8: ['NXRRSET', 'rrset doesn\'t exist'],
-    9: ['NOTAUTH', 'not authoritative'],
-    10: ['NOTZONE', 'not in zone'],
-    11: ['', ''],
+    '6': ['YXDOMAIN', 'domain name exist'],
+    '7': ['YXRRSET', 'rrset exists'],
+    '8': ['NXRRSET', 'rrset doesn\'t exist'],
+    '9': ['NOTAUTH', 'not authoritative'],
+    '10': ['NOTZONE', 'not in zone'],
+    '11': ['', ''],
 
 	// The following are EDNS extended rcodes
 
 	// The following are TSIG errors
-    16: ['BADSIG', 'bad signature'],
-    17: ['BADKEY', 'bad key'],
-    18: ['BADTIME', 'bad time']
+    '16': ['BADSIG', 'bad signature'],
+    '17': ['BADKEY', 'bad key'],
+    '18': ['BADTIME', 'bad time']
 };

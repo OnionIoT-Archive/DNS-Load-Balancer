@@ -2,8 +2,9 @@
 
 var FreeList = require('freelist').FreeList;
 
-var debug = require('../etc/debug'),
-    constants = require('../etc/constants');
+var debug = require('./debug'),
+    consts = require('./consts'),
+    Ptr = require('./ptr');
 
 
 /****************
@@ -104,10 +105,10 @@ DNSParser.prototype.parseMessage = function () {
         return;
     }
 
-    qdcount = this.buf[this.parseStart-8] * 256 + this.buf[this.parseStart-7];
-    ancount = this.buf[this.parseStart-6] * 256 + this.buf[this.parseStart-5];
-    nscount = this.buf[this.parseStart-4] * 256 + this.buf[this.parseStart-3];
-    arcount = this.buf[this.parseStart-2] * 256 + this.buf[this.parseStart-1];
+    qdcount = this.buf[this.parseStart - 8] * 256 + this.buf[this.parseStart - 7];
+    ancount = this.buf[this.parseStart - 6] * 256 + this.buf[this.parseStart - 5];
+    nscount = this.buf[this.parseStart - 4] * 256 + this.buf[this.parseStart - 3];
+    arcount = this.buf[this.parseStart - 2] * 256 + this.buf[this.parseStart - 1];
     rrcount = ancount + nscount + arcount;
 
     for (var i = 0; i < qdcount; i++) {
@@ -142,7 +143,7 @@ DNSParser.prototype.parseMessage = function () {
 };
 
 DNSParser.prototype.skipHeader = function (callback) {
-    this.parseEnd = this.parseStart + ns_hfixedsz;
+    this.parseEnd = this.parseStart + consts.ns_hfixedsz;
     if (this.parseEnd > this.bufEnd) {
 	   throw new Error();
     }
@@ -159,7 +160,7 @@ DNSParser.prototype.skipQuestion = function (callback) {
     if (ns_name_skip(this.buf, ptr, this.bufEnd) != 0)
 	throw new Error();
 
-    this.parseEnd = ptr.get() + ns_qfixedsz;
+    this.parseEnd = ptr.get() + consts.ns_qfixedsz;
     if (this.parseEnd > this.bufEnd)
 	throw new Error();
     
@@ -173,69 +174,84 @@ DNSParser.prototype.skipRR = function (callback) {
     var rrcount;
     var ptr = new Ptr(this.parseStart);
 
-    if (ns_name_skip(this.buf, ptr, this.bufEnd) != 0)
-	throw new Error();
+    if (ns_name_skip(this.buf, ptr, this.bufEnd) != 0) {
+	   throw new Error();
+    }
     
-    this.parseEnd = ptr.get() + ns_rrfixedsz;
-    if (this.parseEnd > this.bufEnd)
-	throw new Error();
+    this.parseEnd = ptr.get() + consts.ns_rrfixedsz;
+    if (this.parseEnd > this.bufEnd) {
+	   throw new Error();
+    }
     
     this.parseEnd += this.buf[this.parseEnd - 2] * 256 + this.buf[this.parseEnd - 1];
-    if (this.parseEnd > this.bufEnd)
-	throw new Error();
+    if (this.parseEnd > this.bufEnd) {
+	   throw new Error();
+    }
 
-    if (typeof callback === 'function')
-	callback (this.buf, this.parseStart, this.parseEnd);
+    if (typeof callback === 'function') {
+	   callback (this.buf, this.parseStart, this.parseEnd);
+    }
 
     this.parseStart = this.parseEnd;
 };
 
-DNSParser.prototype._cdname = new Buffer(ns_maxcdname);
+DNSParser.prototype._cdname = new Buffer(consts.ns_maxcdname);
 
-DNSParser.prototype._dname = new Buffer(ns_maxdname);
+DNSParser.prototype._dname = new Buffer(consts.ns_maxdname);
 
-DNSParser.prototype._string = new Buffer(ns_maxdname);
+DNSParser.prototype._string = new Buffer(consts.ns_maxdname);
 
 DNSParser.prototype.parseName = function () {
     var n, len;
 
-    if ((n = ns_name_unpack(this.buf, this.parseStart, this.parseEnd - this.parseStart, this._dname, this._dname.length)) == -1)
-	throw new Error();
-    if ((len = ns_name_ntop(this._dname, this._string, this._string.length)) == -1)
-	throw new Error();
+    if ((n = ns_name_unpack(this.buf, this.parseStart, this.parseEnd - this.parseStart, this._dname, this._dname.length)) == -1) {
+	   throw new Error();
+    }
+
+    if ((len = ns_name_ntop(this._dname, this._string, this._string.length)) == -1) {
+	   throw new Error();
+    }
 
     this.parseStart += n;
+
     return this._string.toString('ascii', 0, len);
 };
 
 DNSParser.prototype.parseUInt8 = function () {
-    if (this.parseStart + 1 > this.parseEnd)
-	throw new Error();
+    if (this.parseStart + 1 > this.parseEnd) {
+	   throw new Error();
+    }
+    
     this.parseStart++;
-    return this.buf[this.parseStart-1];
+
+    return this.buf[this.parseStart - 1];
 };
 
 DNSParser.prototype.parseUInt16 = function () {
-    if (this.parseStart + 2 > this.parseEnd)
-	throw new Error();
+    if (this.parseStart + 2 > this.parseEnd) {
+	   throw new Error();
+    }
+
     this.parseStart += 2;
-    return this.buf[this.parseStart-2] * 256 + this.buf[this.parseStart-1];
+
+    return this.buf[this.parseStart - 2] * 256 + this.buf[this.parseStart - 1];
 };
 
 DNSParser.prototype.parseUInt32 = function () {
-    if (this.parseStart + 4 > this.parseEnd)
-	throw new Error();
+    if (this.parseStart + 4 > this.parseEnd) {
+	   throw new Error();
+    }
+
     this.parseStart += 4;
-    return (this.buf[this.parseStart-4] * 16777216 +
-	    this.buf[this.parseStart-3] * 65536 + 
-	    this.buf[this.parseStart-2] * 256 +
-	    this.buf[this.parseStart-1] );
+
+    return this.buf[this.parseStart - 4] * 16777216 + this.buf[this.parseStart - 3] * 65536 + this.buf[this.parseStart - 2] * 256 + this.buf[this.parseStart - 1];
 };
 
 DNSParser.prototype.parseHeader = function (header) {
     var tmp;
     header.id = this.parseUInt16();
     tmp = this.parseUInt16();
+
     header.qr = (tmp & 0x8000) >> 15;
     header.opcode = (tmp & 0x7800) >> 11;
     header.aa = (tmp & 0x0400) >> 10;
@@ -257,18 +273,23 @@ DNSParser.prototype.parseQuestion = function (question) {
     question.name = this.parseName();
     question.type = this.parseUInt16();
     question.class = this.parseUInt16();
-    question.typeName = p_type_syms[question.type];
-    question.className = p_class_syms[question.class];
+    question.typeName = consts.p_type_syms[question.type];
+    question.className = consts.p_class_syms[question.class];
 };
 
 DNSParser.prototype.parseA = function () {
-    if (this.parseStart + 4 > this.parseEnd)
-	throw new Error();
+    if (this.parseStart + 4 > this.parseEnd) {
+	   throw new Error();
+    }
+
     this.parseStart += 4;
-    return [this.buf[this.parseStart-4],
+
+    return [
+        this.buf[this.parseStart-4],
 	    this.buf[this.parseStart-2],
 	    this.buf[this.parseStart-1],
-	    this.buf[this.parseStart-1]].join('.');
+	    this.buf[this.parseStart-1]
+    ].join('.');
 };
 
 DNSParser.prototype.parseSOA = function (soa) {
@@ -304,25 +325,22 @@ DNSParser.prototype.parseMX = function (mx) {
 };
 
 DNSParser.prototype.parseAAAA = function () {
-    if (this.parseStart + 16 > this.parseEnd)
-    throw new Error();
+    if (this.parseStart + 16 > this.parseEnd) {
+        throw new Error();
+    }
+
     this.parseStart += 16;
-    return [(hexvalue[this.buf[this.parseStart-16]]+
-         hexvalue[this.buf[this.parseStart-15]]),
-        (hexvalue[this.buf[this.parseStart-14]]+
-         hexvalue[this.buf[this.parseStart-13]]),
-        (hexvalue[this.buf[this.parseStart-12]]+
-         hexvalue[this.buf[this.parseStart-11]]),
-        (hexvalue[this.buf[this.parseStart-10]]+
-         hexvalue[this.buf[this.parseStart-9]]),
-        (hexvalue[this.buf[this.parseStart-8]]+
-         hexvalue[this.buf[this.parseStart-7]]),
-        (hexvalue[this.buf[this.parseStart-6]]+
-         hexvalue[this.buf[this.parseStart-5]]),
-        (hexvalue[this.buf[this.parseStart-4]]+
-         hexvalue[this.buf[this.parseStart-3]]),
-        (hexvalue[this.buf[this.parseStart-2]]+
-         hexvalue[this.buf[this.parseStart-1]])].join(":");
+
+    return [
+        consts.hexvalue[this.buf[this.parseStart - 16]] + consts.hexvalue[this.buf[this.parseStart - 15]],
+        consts.hexvalue[this.buf[this.parseStart - 14]] + consts.hexvalue[this.buf[this.parseStart - 13]],
+        consts.hexvalue[this.buf[this.parseStart - 12]] + consts.hexvalue[this.buf[this.parseStart - 11]],
+        consts.hexvalue[this.buf[this.parseStart - 10]] + consts.hexvalue[this.buf[this.parseStart - 9]],
+        consts.hexvalue[this.buf[this.parseStart - 8]] + consts.hexvalue[this.buf[this.parseStart - 7]],
+        consts.hexvalue[this.buf[this.parseStart - 6]] + consts.hexvalue[this.buf[this.parseStart - 5]],
+        consts.hexvalue[this.buf[this.parseStart - 4]] + consts.hexvalue[this.buf[this.parseStart - 3]],
+        consts.hexvalue[this.buf[this.parseStart - 2]] + consts.hexvalue[this.buf[this.parseStart - 1]]
+    ].join(":");
 }
 
 DNSParser.prototype.parseNSEC = function (nsec) {
@@ -338,64 +356,66 @@ DNSParser.prototype.parseNSEC = function (nsec) {
 
 DNSParser.prototype.parseRR = function (rr) {
     var parseEnd;
+
     rr.name = this.parseName();
     rr.type = this.parseUInt16();
     rr.class = this.parseUInt16();
     rr.ttl = this.parseUInt32();
     rr.rdlength = this.parseUInt16();
+    rr.typeName = consts.p_type_syms[rr.type];
+    rr.className = consts.p_class_syms[rr.class];
 
-    rr.typeName = p_type_syms[rr.type];
-    rr.className = p_class_syms[rr.class];
-
-    if (this.parseStart + rr.rdlength != this.parseEnd)
-    throw new Error();
+    if (this.parseStart + rr.rdlength != this.parseEnd) {
+        throw new Error();
+    }
 
     rr.rdata = new Rdata();
     rr.rdata.length = 1;
 
     switch (rr.type) {
-    case 1: // a
-    rr.rdata.a = this.parseA();
-    rr.rdata[0] = rr.rdata.a;
-    break;
-    case 2: // ns
-    rr.rdata.ns = this.parseName();
-    rr.rdata[0] = rr.rdata.ns;
-    break;
-    case 5: // cname
-    rr.rdata.cname = this.parseName();
-    rr.rdata[0] = rr.rdata.cname;
-    break;
-    case 6: // soa
-    this.parseSOA(rr.rdata);
-    break;
-    case 12: // ptr
-    rr.rdata.ptrdname = this.parseName();
-    rr.rdata[0] = rr.rdata.ptrdname;
-    break;
-    case 15: // mx
-    this.parseMX(rr.rdata);
-    break;
-    case 16: // txt
-    rr.rdata.txt = new BufferReference (this.buf, this.parseStart, this.parseEnd);
-    //rr.rdata.txt = this.buf.slice(this.parseStart, this.parseEnd);
-    rr.rdata[0] = rr.rdata.txt;
-    this.parseStart += rr.rdlength;
-    break;
-    case 28: // aaaa
-    rr.rdata.aaaa = this.parseAAAA();
-    rr.rdata[0] = rr.rdata.aaaa;
-    break;
-    case 47: // nsec
-    this.parseNSEC(rr.rdata);
-    break;
-    default:
-    rr.rdata = new BufferReference(this.parseStart, this.parseEnd);
-    break;
+        case 1: // a
+            rr.rdata.a = this.parseA();
+            rr.rdata[0] = rr.rdata.a;
+            break;
+        case 2: // ns
+            rr.rdata.ns = this.parseName();
+            rr.rdata[0] = rr.rdata.ns;
+            break;
+        case 5: // cname
+            rr.rdata.cname = this.parseName();
+            rr.rdata[0] = rr.rdata.cname;
+            break;
+        case 6: // soa
+            this.parseSOA(rr.rdata);
+            break;
+        case 12: // ptr
+            rr.rdata.ptrdname = this.parseName();
+            rr.rdata[0] = rr.rdata.ptrdname;
+            break;
+        case 15: // mx
+            this.parseMX(rr.rdata);
+            break;
+        case 16: // txt
+            rr.rdata.txt = new BufferReference (this.buf, this.parseStart, this.parseEnd);
+            //rr.rdata.txt = this.buf.slice(this.parseStart, this.parseEnd);
+            rr.rdata[0] = rr.rdata.txt;
+            this.parseStart += rr.rdlength;
+            break;
+        case 28: // aaaa
+            rr.rdata.aaaa = this.parseAAAA();
+            rr.rdata[0] = rr.rdata.aaaa;
+            break;
+        case 47: // nsec
+            this.parseNSEC(rr.rdata);
+            break;
+        default:
+            rr.rdata = new BufferReference(this.parseStart, this.parseEnd);
+            break;
     }
 
-    if (this.parseStart != this.parseEnd)
-    throw new Error();
+    if (this.parseStart != this.parseEnd) {
+        throw new Error();
+    }
 };
 
 DNSParser.prototype.finish = function () {

@@ -13,4 +13,4 @@ if (debugLevel & 0x4) {
     debug = function () {};
 }
 
-module.export = debug;
+module.exports = debug;
